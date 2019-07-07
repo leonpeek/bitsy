@@ -1,6 +1,6 @@
 package com.lambdazen.bitsy;
 
-import java.lang.management.ManagementFactory;
+//import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -9,9 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
+//import javax.management.MBeanServer;
+//import javax.management.MalformedObjectNameException;
+//import javax.management.ObjectName;
 
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
@@ -62,7 +62,7 @@ public class BitsyGraph implements Graph, BitsyGraphMBean {
     private ThreadLocal<BitsyTransactionContext> curTransactionContext;
     private IGraphStore graphStore;
     private Features bitsyFeatures;
-    private ObjectName objectName;
+//    private ObjectName objectName;
     private BitsyIsolationLevel defaultIsolationLevel;
     private boolean createDirIfMissing = false;
     private Configuration origConfig;
@@ -117,19 +117,19 @@ public class BitsyGraph implements Graph, BitsyGraphMBean {
         this.defaultIsolationLevel = BitsyIsolationLevel.READ_COMMITTED;
         this.createDirIfMissing = createDirIfMissing; 
 
-        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+//        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
         if (isPersistent()) {
-            // Make sure that another BitsyGraph doesn't exist with the same path
-            try {
-                this.objectName = new ObjectName("com.lambdazen.bitsy", "path", ObjectName.quote(dbPath.toString()));
-            } catch (MalformedObjectNameException e) {
-                throw new BitsyException(BitsyErrorCodes.INTERNAL_ERROR, "Bug in quoting ObjectName", e);
-            }
-            
-            // Check registry
-            if (server.isRegistered(objectName)) {
-                throw new BitsyException(BitsyErrorCodes.INSTANCE_ALREADY_EXISTS, "Path " + dbPath.toString());
-            }
+//            // Make sure that another BitsyGraph doesn't exist with the same path
+//            try {
+//                this.objectName = new ObjectName("com.lambdazen.bitsy", "path", ObjectName.quote(dbPath.toString()));
+//            } catch (MalformedObjectNameException e) {
+//                throw new BitsyException(BitsyErrorCodes.INTERNAL_ERROR, "Bug in quoting ObjectName", e);
+//            }
+//
+//            // Check registry
+//            if (server.isRegistered(objectName)) {
+//                throw new BitsyException(BitsyErrorCodes.INSTANCE_ALREADY_EXISTS, "Path " + dbPath.toString());
+//            }
             
             // Load from files
             this.graphStore = new FileBackedMemoryGraphStore(new MemoryGraphStore(allowFullGraphScans), dbPath, txLogThreshold, reorgFactor, createDirIfMissing);
@@ -139,14 +139,14 @@ public class BitsyGraph implements Graph, BitsyGraphMBean {
         
         this.bitsyFeatures = new BitsyFeatures(isPersistent);
 
-        // Register this to the MBeanServer
-        if (objectName != null) { 
-            try {
-                server.registerMBean(this, objectName);
-            } catch (Exception e) {
-                throw new BitsyException(BitsyErrorCodes.ERROR_REGISTERING_TO_MBEAN_SERVER, "Encountered exception", e);
-            }
-        }
+//        // Register this to the MBeanServer
+//        if (objectName != null) {
+//            try {
+//                server.registerMBean(this, objectName);
+//            } catch (Exception e) {
+//                throw new BitsyException(BitsyErrorCodes.ERROR_REGISTERING_TO_MBEAN_SERVER, "Encountered exception", e);
+//            }
+//        }
     }
 
     /** 
@@ -554,16 +554,16 @@ public class BitsyGraph implements Graph, BitsyGraphMBean {
             // Shutdown the underlying store
             graphStore.shutdown();
         } finally {
-            if (this.objectName != null) {
-                // Deregister from JMX
-                MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-                try {
-                    server.unregisterMBean(objectName);
-                } catch (Exception e) {
-                    log.error("Error unregistering MBean named " + objectName + " from the MBeanServer", e);
-                }
-                objectName = null;
-            }
+//            if (this.objectName != null) {
+//                // Deregister from JMX
+//                MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+//                try {
+//                    server.unregisterMBean(objectName);
+//                } catch (Exception e) {
+//                    log.error("Error unregistering MBean named " + objectName + " from the MBeanServer", e);
+//                }
+//                objectName = null;
+//            }
         }
     }
 
